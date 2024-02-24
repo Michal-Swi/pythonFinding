@@ -1,34 +1,46 @@
 import os
+
 import subprocess
 
-class File:
-    isDir = False
-    name = ''
+wantedFile = 'lpr'
 
-fileList = []
+def refactorDirectory(currentDirectory):
+    currentDirectory = currentDirectory.decode('UTF-8') 
+    
+    fileList = []
 
-def appendToFileList(currentDirectory):
-    currentDirectory = currentDirectory.decode('UTF-8')
-
-    temp = File()
+    temp = ''
     for i in range (len(currentDirectory)):
-        if currentDirectory[i] == '\n':
-            
-            if isdir(temp.name):
-                temp.isDir = True
-            
-
+        if currentDirectory[i] == '\n': 
             fileList.append(temp)
-            temp = File()
+            temp = ''
         else:
-            temp.name += currentDirectory[i]
+            temp += currentDirectory[i]
 
+    return fileList
 
+def printCurrentDirectory():
+    currentDirectory = subprocess.check_output('pwd')
+    currentDirectory = currentDirectory.decode('UTF-8').strip()
+    currentDirectory += '/' + wantedFile
 
-os.chdir('/')
+    print(currentDirectory)
 
-currentDirectory = subprocess.check_output('ls')
+def traverseDirectory(directory):
+    os.chdir(directory)
 
-appendToFileList(currentDirectory)
+    directory = subprocess.check_output('ls')
+    directory = refactorDirectory(directory)
 
+    for i in range (len(directory)):
+        if directory[i] == wantedFile:
+            printCurrentDirectory()
+            return True
 
+        if os.path.isdir(directory[i]): 
+            traverseDirectory(directory[i])
+
+    os.chdir('..')
+    return
+
+traverseDirectory('/')
