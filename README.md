@@ -1,3 +1,3 @@
 # pythonFinding
-## Script for finding stuff in your computer
+## Script for finding stuff on your computer
 
